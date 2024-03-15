@@ -1,0 +1,43 @@
+<ng-container [formGroup]="form">
+    <div class="form-floating mt-4">
+        <textarea id="txtResources" class="form-control" placeholder="-" style="height: 150px"
+            formControlName="principalResources" [ngClass]="{'is-invalid': hasError('principalResources')}">
+        </textarea>
+        <label for="txtResources">Principales Recursos o Materiales</label>
+        <div class="invalid-feedback">Este campo es requerido</div>
+    </div>
+
+    <div class="form-floating mt-2">
+        <textarea id="txtSocialManagement" class="form-control" placeholder="-" style="height: 100px"
+            formControlName="socialMeasures" [ngClass]="{'is-invalid': hasError('socialMeasures')}">
+        </textarea>
+        <label for="txtSocialManagement">Medidas de Gestión Social</label>
+        <div class="invalid-feedback">Este campo es requerido</div>
+    </div>
+
+    <div class="form-floating mt-2">
+        <textarea id="txtDiffusionMechanisms" class="form-control" placeholder="-" style="height: 100px"
+            formControlName="disseminationMechanisms" [ngClass]="{'is-invalid': hasError('disseminationMechanisms')}">
+        </textarea>
+        <label for="txtDiffusionMechanisms">
+            Descripción de los Mecanismos de Difusión de Información del Proyecto
+        </label>
+        <div class="invalid-feedback">Este campo es requerido</div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-4">
+        <div class="form-floating col-md-6">
+            <input id="txtOperationNumber" class="form-control" placeholder="-"
+                formControlName="operationNumber" [ngClass]="{'is-invalid': hasError('operationNumber')}">
+            <label for="txtOperationNumber">Número de Operación del Banco de la Nación</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+        
+        <div class="form-floating col-md-6">
+            <input id="txtOperationDate" type="date" class="form-control" placeholder="-"
+                formControlName="operationDate" [ngClass]="{'is-invalid': hasError('operationDate')}">
+            <label for="txtOperationDate">Fecha de Operación del Banco de la Nación</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+</ng-container>

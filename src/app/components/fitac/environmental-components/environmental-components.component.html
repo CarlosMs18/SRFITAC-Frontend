@@ -1,0 +1,46 @@
+<div class="d-flex flex-column" [formGroup]="form">
+    <ng-container formArrayName="arrays">
+        <ng-container *ngFor="let itemForm of forms; let i = index">
+            <div class="d-flex flex-column mt-4 border rounded p-3" [formGroup]="itemForm">
+                <div class="d-flex">
+                    <h3>Componente Ambiental {{i + 1}}</h3>
+                    <button class="btn btn-outline-primary ms-auto p-2" title="Eliminar"
+                        (click)="removeItemForm(i)" [disabled]="forms.length == 1">
+                        <i class="fs-4 fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-4">
+                    <div class="form-floating col-md-4">
+                        <select id="ddlEnvironment" class="form-select" formControlName="environment" (change)="environmentChange(i)"
+                            [ngClass]="{'is-invalid': hasError('environment', '', itemForm)}" placeholder="-">
+                            <option value="" disabled>Seleccionar</option>
+                            <option *ngFor="let option of environmentTypeList" [value]="option.code">{{option.name}}</option>
+                        </select>
+                        <label for="ddlEnvironment">Medio</label>
+                        <div class="invalid-feedback">Este campo es requerido</div>
+                    </div>
+
+                    <div class="form-floating col-md-4">
+                        <select id="ddlComponent" class="form-select" formControlName="component"
+                            [ngClass]="{'is-invalid': hasError('component', '', itemForm)}" placeholder="-">
+                            <option value="" disabled>Seleccionar</option>
+                            <option *ngFor="let option of componentLists[i].list" [value]="option.code">{{option.name}}</option>
+                        </select>
+                        <label for="ddlComponent">Componente</label>
+                        <div class="invalid-feedback">Este campo es requerido</div>
+                    </div>
+
+                    <div class="form-floating col-md-4">
+                        <input id="txtDescription" class="form-control" placeholder="-"
+                            formControlName="description" [ngClass]="{'is-invalid': hasError('description', '', itemForm)}">
+                        <label for="txtDescription">Descripción</label>
+                        <div class="invalid-feedback">Este campo es requerido</div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+    <button class="btn btn-outline-primary ms-auto mt-3 me-3 p-1" (click)="addItemForm()" title="Agregar">
+        <i class="fs-1 fa-solid fa-square-plus"></i>
+    </button>
+</div>

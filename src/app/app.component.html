@@ -1,0 +1,60 @@
+<app-spinner></app-spinner>
+<div class="position-fixed top-0 start-0 w-100 bg-white" style="z-index: 10;">
+  <div class="container">
+    <app-stepper [stepNames]="stepNames" [selectedStep]="selectedStep"></app-stepper>
+  </div>
+</div>
+<div class="container d-flex flex-column my-5 py-5">
+  <app-general-data (validatedForm)="validatedFormGeneralData($event)"
+    [ngClass]="{ 'fade show': selectedStep == 1, 'd-none': selectedStep != 1 }">
+  </app-general-data>
+
+  <app-consultants (validatedForm)="validatedFormConsultans($event)"
+    [ngClass]="{ 'fade show': selectedStep == 2, 'd-none': selectedStep != 2 }">
+  </app-consultants>
+
+  <app-project-information (validatedForm)="validatedFormProjectInformation($event)"
+    [ngClass]="{ 'fade show': selectedStep == 3, 'd-none': selectedStep != 3 }">
+
+  </app-project-information>
+
+  <app-technical-description (validatedForm)="validatedFormTechnicalDescription($event)"
+    [ngClass]="{ 'fade show': selectedStep == 4, 'd-none': selectedStep != 4 }">
+  </app-technical-description>
+
+  <app-environmental-components (validatedForm)="validatedFormEnvironmentalComponents($event)"
+    [ngClass]="{ 'fade show': selectedStep == 5, 'd-none': selectedStep != 5 }">
+  </app-environmental-components>
+
+  <app-environmental-impacts (validatedForm)="validatedFormEnvironmentalImpacts($event)"
+    [ngClass]="{ 'fade show': selectedStep == 6, 'd-none': selectedStep != 6 }">
+  </app-environmental-impacts>
+
+  <app-additional-data (validatedForm)="validatedFormAdditionalData($event)"
+    [ngClass]="{ 'fade show': selectedStep == 7, 'd-none': selectedStep != 7 }">
+  </app-additional-data>
+
+  <app-attachments (validatedForm)="validatedAttachments($event)"
+    [ngClass]="{ 'fade show': selectedStep == 8, 'd-none': selectedStep != 8 }">
+  </app-attachments>
+
+</div>
+
+<div class="position-fixed bottom-0 start-0 w-100 bg-white" style="z-index: 10;">
+  <div class="container my-4 d-flex justify-content-between px-3">
+    <button class="btn btn-secondary" (click)="cancel()">
+      Cancelar <i class="fa-solid fa-xmark"></i>
+    </button>
+    <div>
+      <button class="btn btn-secondary me-3" (click)="lastStep()">
+        <i class="fa-solid fa-arrow-left"></i> Anterior
+      </button>
+      <button class="btn btn-primary" (click)="nextStep()">
+        {{selectedStep < 8 ? 'Siguiente' : 'Grabar'}}
+        <i class="fa-solid" [ngClass]="selectedStep < 8 ? 'fa-arrow-right' : 'fa-cloud-arrow-up'"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

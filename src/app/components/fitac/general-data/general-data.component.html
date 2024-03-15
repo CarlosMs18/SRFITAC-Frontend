@@ -1,0 +1,224 @@
+<div class="d-flex flex-column mt-4" [formGroup]="form">
+    <div class="d-flex flex-column">
+        <div class="d-none d-flex flex-column flex-sm-row ms-auto">
+            <a [href]="templateURL" target="_blank" class="btn btn-outline-primary ms-2">
+                <i class="fa-solid fa-download"></i> Descargar Plantilla de Ficha
+            </a>
+            <button class="btn btn-outline-primary ms-2" (click)="fileData.click();"
+                title="Seleccione un archivo excel que contenga los datos de la ficha según el formato establecido en la plantilla">
+                <i class="fa-solid fa-upload"></i> Cargar Ficha desde Archivo Excel
+            </button>
+            <input type="file" class="d-none" #fileData (change)="onFileChange($event)"
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+        </div>
+    </div>
+    <div class="d-flex flex-wrap flex-column flex-sm-row justify-content-between mt-2">
+        <div class="form-floating pe-1 col-sm-12 col-md-4">
+            <select id="ddlPersonType" class="form-select" (change)="personTypeChange()"
+                formControlName="personType" [ngClass]="{'is-invalid': hasError('personType')}">
+                <option *ngFor="let x of personTypeList" [value]="x.code">{{x.name}}</option>
+            </select>
+            <label for="ddlPersonType">Tipo de Persona</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+
+        <div class="form-floating pe-1 col-sm-6 col-md-4">
+            <select id="ddlDocumentType" class="form-select"
+                formControlName="documentType" [ngClass]="{'is-invalid': hasError('documentType')}">
+                <option *ngFor="let x of documentTypeList" [value]="x.code">{{x.name}}</option>
+            </select>
+            <label for="ddlDocumentType">Tipo de Documento</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+
+        <div class="form-floating pe-1 col-sm-6 col-md-4">
+            <input id="txtDocumentNumber" class="form-control" placeholder="-"
+                formControlName="documentNumber" [ngClass]="{'is-invalid': hasError('documentNumber')}">
+            <label for="txtDocumentNumber">Número de Documento</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-sm-row justify-content-between mt-2">
+        <div class="form-floating pe-1 col-sm-12">
+            <input id="txtNombres" class="form-control" placeholder="-"
+                formControlName="name" [ngClass]="{'is-invalid': hasError('name')}">
+            <label for="txtNombres">{{isLegalEntity ? 'Razón Social' : 'Nombres y Apellidos'}}</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+        <div class="form-floating pe-1 col-md-4">
+            <input id="txtPhone" class="form-control" placeholder="-"
+                formControlName="cellphone" [ngClass]="{'is-invalid': hasError('cellphone')}">
+            <label for="txtPhone">Celular y/o Teléfono</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+
+        <div class="form-floating pe-1 col-md-8">
+            <input id="txtEmail" class="form-control" placeholder="-"
+                formControlName="email" [ngClass]="{'is-invalid': hasError('email')}">
+            <label for="txtEmail">Correo Electrónico</label>
+            <div *ngIf="hasError('email', 'required')" class="invalid-feedback">Este campo es requerido</div>
+            <div *ngIf="hasError('email', 'email')" class="invalid-feedback">Debe ingresar un correo válido</div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+        <div class="form-floating pe-1 col-md-4">
+            <select id="ddlDepartament" class="form-select" (change)="departmentChange()"
+                formControlName="department" [ngClass]="{'is-invalid': hasError('department')}">
+                <option value="" disabled>Seleccionar</option>
+                <option *ngFor="let x of departmentList" [value]="x.id">{{x.name}}</option>
+            </select>
+            <label for="ddlDepartament">Departamento</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+        <div class="form-floating pe-1 col-md-4">
+            <select id="ddlProvince" class="form-select" (change)="provinceChange()"
+                formControlName="province" [ngClass]="{'is-invalid': hasError('province')}">
+                <option value="" disabled>Seleccionar</option>
+                <option *ngFor="let x of provinceList" [value]="x.id">{{x.name}}</option>
+            </select>
+            <label for="ddlProvince">Provincia</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+        <div class="form-floating pe-1 col-md-4">
+            <select id="ddlDistrict" class="form-select"
+                formControlName="district" [ngClass]="{'is-invalid': hasError('district')}">
+                <option value="" disabled>Seleccionar</option>
+                <option *ngFor="let x of districtList" [value]="x.id">{{x.name}}</option>
+            </select>
+            <label for="ddlDistrict">Distrito</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="form-floating pe-1 mt-2">
+        <input id="txtAddress" class="form-control" placeholder="-"
+            formControlName="address" [ngClass]="{'is-invalid': hasError('address')}">
+        <label for="txtAddress">Domicilio Real</label>
+        <div class="invalid-feedback">Este campo es requerido</div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-sm-row mt-2">
+        <div class="form-floating pe-1 col-sm-6">
+            <input id="txtOficinaRegistral" class="form-control" placeholder="-"
+                formControlName="registryOffice" [ngClass]="{'is-invalid': hasError('registryOffice')}">
+            <label for="txtOficinaRegistral">Oficina Registral</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+
+        <div class="form-floating pe-1 col-sm-6">
+            <input id="txtPartida" class="form-control" placeholder="-"
+                formControlName="registryEntry" [ngClass]="{'is-invalid': hasError('registryEntry')}">
+            <label for="txtPartida">Número de Partida Registral</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="d-flex w-100 pe-1 mt-2">
+        <div class="ms-auto">
+            <button class="btn btn-outline-secondary me-2" *ngIf="editing" (click)="cancelClick()">
+                <i class="fa-solid fa-xmark"></i> Cancelar
+            </button>
+            <button *ngIf="!editing" class="btn btn-outline-primary" (click)="editClick()">
+                <i class="fa-solid fa-pen"></i> Editar
+            </button>
+            <button *ngIf="editing" class="btn btn-outline-primary" (click)="editClick()">
+                <i class="fa-solid fa-file-arrow-up"></i> Actualizar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex flex-column mt-4" *ngIf="isLegalEntity" [formGroup]="formLR">
+    <h3>Representante Legal</h3>
+    <div class="d-flex flex-wrap flex-column flex-sm-row justify-content-between mt-2">
+        <div class="form-floating col-sm-6">
+            <select id="ddlLRDocumentType" class="form-select"
+                formControlName="documentType" [ngClass]="{'is-invalid': hasError('documentType', '', formLR)}">
+                <option *ngFor="let x of documentTypeLRList" [value]="x.code">{{x.name}}</option>
+            </select>
+            <label for="ddlLRDocumentType">Tipo de Documento</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+
+        <div class="form-floating col-sm-6">
+            <input id="txtLRDocumentNumber" class="form-control" placeholder="-"
+                formControlName="documentNumber" [ngClass]="{'is-invalid': hasError('documentNumber', '', formLR)}">
+            <label for="txtLRDocumentNumber">Número de Documento</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-sm-row justify-content-between mt-2">
+        <div class="form-floating col-sm-6">
+            <input id="txtLRApellidos" class="form-control" placeholder="-"
+                formControlName="lastName" [ngClass]="{'is-invalid': hasError('lastName', '', formLR)}">
+            <label for="txtLRApellidos">Apellidos</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+
+        <div class="form-floating col-sm-6">
+            <input id="txtLRNombres" class="form-control" placeholder="-"
+                formControlName="name" [ngClass]="{'is-invalid': hasError('name', '', formLR)}">
+            <label for="txtLRNombres">Nombres</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+        <div class="form-floating pe-1 col-md-4">
+            <input id="txtPhone" class="form-control" placeholder="-"
+                formControlName="cellphone" [ngClass]="{'is-invalid': hasError('cellphone', '', formLR)}">
+            <label for="txtPhone">Celular y/o Teléfono</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+
+        <div class="form-floating pe-1 col-md-8">
+            <input id="txtEmail" class="form-control" placeholder="-"
+                formControlName="email" [ngClass]="{'is-invalid': hasError('email', '', formLR)}">
+            <label for="txtEmail">Correo Electrónico</label>
+            <div *ngIf="hasError('email', 'required', formLR)" class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+        <div class="form-floating col-md-4">
+            <select id="ddlLRDepartament" class="form-select" (change)="departmentLRChange()"
+                formControlName="department" [ngClass]="{'is-invalid': hasError('department', '', formLR)}">
+                <option value="" disabled>Seleccionar</option>
+                <option *ngFor="let x of departmentList" [value]="x.id">{{x.name}}</option>
+            </select>
+            <label for="ddlLRDepartament">Departamento</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+        <div class="form-floating col-md-4">
+            <select id="ddlLRProvince" class="form-select" (change)="provinceLRChange()"
+                formControlName="province" [ngClass]="{'is-invalid': hasError('province', '', formLR)}">
+                <option value="" disabled>Seleccionar</option>
+                <option *ngFor="let x of provinceLRList" [value]="x.id">{{x.name}}</option>
+            </select>
+            <label for="ddlLRProvince">Provincia</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+        <div class="form-floating col-md-4">
+            <select id="ddlLRDistrict" class="form-select"
+                formControlName="district" [ngClass]="{'is-invalid': hasError('district', '', formLR)}">
+                <option value="" disabled>Seleccionar</option>
+                <option *ngFor="let x of districtLRList" [value]="x.id">{{x.name}}</option>
+            </select>
+            <label for="ddlLRDistrict">Distrito</label>
+            <div class="invalid-feedback">Este campo es requerido</div>
+        </div>
+    </div>
+
+    <div class="form-floating mt-2">
+        <input id="txtLRAddress" class="form-control" placeholder="-"
+            formControlName="address" [ngClass]="{'is-invalid': hasError('address', '', formLR)}">
+        <label for="txtLRAddress">Domicilio Real</label>
+        <div class="invalid-feedback">Este campo es requerido</div>
+    </div>
+</div>

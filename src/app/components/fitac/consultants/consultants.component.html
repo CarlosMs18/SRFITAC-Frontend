@@ -1,0 +1,83 @@
+<div class="d-flex flex-column mt-4" [formGroup]="form">
+    <div class="d-flex flex-column">
+        <div class="form-check">
+            <input [checked]="checkedConsulting" class="form-check-input" type="checkbox" value="" id="chkCompany" (click)="enabledCompany($event)">
+            <label class="form-check-label" for="chkCompany">
+                A través de empresa consultora
+            </label>
+        </div>
+        <div class="d-flex">
+            <div class="form-floating col-sm-4">
+                <input id="txtRUC" class="form-control" placeholder="-"
+                    formControlName="consultingFirmDocument" [ngClass]="{'is-invalid': hasError('consultingFirmDocument')}">
+                <label for="txtRUC">RUC de Consultora</label>
+                <div class="invalid-feedback">Este campo es requerido</div>
+            </div>
+            <div class="form-floating col-sm-8">
+                <input id="txtCompanyName" class="form-control" placeholder="-"
+                    formControlName="consultingFirmName" [ngClass]="{'is-invalid': hasError('consultingFirmName')}">
+                <label for="txtCompanyName">Nombre de Empresa Consultora</label>
+                <div class="invalid-feedback">Este campo es requerido</div>
+            </div>
+        </div>
+    </div>
+    <ng-container formArrayName="consultants">
+        <ng-container *ngFor="let consultantForm of consultantForms; let i = index">
+            <div class="d-flex flex-column mt-4" [formGroup]="consultantForm">
+                <div class="d-flex">
+                    <div class="d-flex flex-column">
+                        <h3 class="mb-0">Consultor</h3>
+                        <span class="small fst-italic mb-2">Ingrese el tipo y número de documento y haga click en el botón de búsqueda</span>
+                    </div>
+                    <button *ngIf="i > 0" class="btn btn-outline-primary ms-auto" (click)="removeConsultant(i)">Eliminar</button>
+                </div>
+
+                <div class="d-flex flex-wrap flex-column flex-sm-row mt-2">
+                    <div class="form-floating col-sm-6">
+                        <select id="ddlACDocumentType" class="form-select" formControlName="documentType" (change)="changeDocumentType(consultantForm)"
+                            [ngClass]="{'is-invalid': hasError('documentType', '', consultantForm)}">
+                            <option *ngFor="let option of documentTypeList" [value]="option.code">{{option.name}}</option>
+                        </select>
+                        <label for="ddlACDocumentType">Tipo de Documento</label>
+                        <div class="invalid-feedback">Este campo es requerido</div>
+                    </div>
+
+                    <div class="col-sm-6 d-flex flex-column">
+                        <div class="d-flex">
+                            <div class="form-floating flex-grow-1">
+                                <input id="txtACDocumentNumber" class="form-control rounded-0 rounded-start" placeholder="-" (input)="changeDocument(consultantForm)"
+                                    formControlName="documentNumber" [ngClass]="{'is-invalid': hasError('documentNumber', '', consultantForm)}">
+                                <label for="txtACDocumentNumber">Número de Documento</label>
+                            </div>
+                            <button class="btn btn-outline-primary rounded-0 rounded-end" (click)="searchConsultant(consultantForm)" title="buscar">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback" [ngClass]="{'d-block': hasError('documentNumber', '', consultantForm)}">Este campo es requerido</div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap flex-column flex-sm-row mt-2" *ngIf="consultantForm.get('searched')?.value">
+                    <ng-container *ngIf="consultantForm.get('found')?.value; else notFound">
+                        <!-- <div class="valid-feedback d-block">Consultor encontrado</div> -->
+                        <div class="form-floating col-sm-6">
+                            <input class="form-control" formControlName="name" readonly>
+                            <label>Nombre del Consultor</label>
+                        </div>
+                        <div class="form-floating col-sm-6">
+                            <input class="form-control" formControlName="tuitionNumber" placeholder="-" [ngClass]="{'is-invalid': hasError('tuitionNumber', '', consultantForm)}">
+                            <label>Número de Colegiatura</label>
+                            <div class="invalid-feedback">Este campo es requerido</div>
+                        </div>
+                    </ng-container>
+                    <ng-template #notFound>
+                        <div class="invalid-feedback d-block">
+                            No se ha encontrado un consultor registrado con el tipo y número de documento ingresado.<br>
+                            Por favor escriba al correo <a href="mailto:ambiental-telecom@mtc.gob.pe">ambiental-telecom@mtc.gob.pe</a> para proceder con el registro del consultor.
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+</div>

@@ -1,0 +1,237 @@
+
+<ng-container [formGroup]="form">
+  <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-4">
+      <div class="form-floating col-12">
+          <input id="txtProjectName" class="form-control" placeholder="-"
+              formControlName="projectName" [ngClass]="{'is-invalid': hasError('projectName')}">
+          <label for="txtProjectName">Nombre del Proyecto</label>
+          <div class="invalid-feedback">Este campo es requerido</div>
+      </div>
+  </div>
+
+  <div class="d-flex flex-column flex-md-row" formArrayName="locations">
+      <div class="d-flex flex-column flex-fill">
+          <div *ngFor="let locationForm of locationForms; let i = index" [formGroup]="locationForm"
+              class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+              <div class="form-floating col-md-4">
+                  <select id="ddlProjDepartament" class="form-select" (change)="departmentChange(i)"
+                      formControlName="department" [ngClass]="{'is-invalid': locationForm.get('department')?.touched && locationForm.get('department')?.hasError('required')}">
+                      <option value="" disabled>Seleccionar</option>
+                      <option *ngFor="let x of departmentList" [value]="x.id">{{x.name}}</option>
+                  </select>
+                  <label for="ddlProjDepartament">Departamento</label>
+                  <div *ngIf="locationForm.get('department')?.touched && locationForm.get('department')?.hasError('required')" class="invalid-feedback">Este campo es requerido</div>
+              </div>
+              <div class="form-floating col-md-4">
+                  <select id="ddlProjProvince" class="form-select" (change)="provinceChange(i)"
+                      formControlName="province" [ngClass]="{'is-invalid': locationForm.get('province')?.touched && locationForm.get('province')?.hasError('required')}">
+                      <option value="" disabled>Seleccionar</option>
+                      <option *ngFor="let x of ubigeoList[i].provinceList" [value]="x.id">{{x.name}}</option>
+                  </select>
+                  <label for="ddlProjProvince">Provincia</label>
+                  <div *ngIf="locationForm.get('province')?.touched && locationForm.get('province')?.hasError('required')" class="invalid-feedback">Este campo es requerido</div>
+              </div>
+              <div class="form-floating col-md-4">
+                  <select id="ddlProjDistrict" class="form-select"
+                      formControlName="district" [ngClass]="{'is-invalid': locationForm.get('district')?.touched && locationForm.get('district')?.hasError('required')}">
+                      <option value="" disabled>Seleccionar</option>
+                      <option *ngFor="let x of ubigeoList[i].districtList" [value]="x.id">{{x.name}}</option>
+                  </select>
+                  <label for="ddlProjDistrict">Distrito</label>
+                  <div *ngIf="locationForm.get('district')?.touched && locationForm.get('district')?.hasError('required') " class="invalid-feedback">Este campo es requerido</div>
+              </div>
+          </div>
+      </div>
+      <div class="d-flex flex-row flex-md-column justify-content-end ps-3">
+          <button class="btn btn-outline-primary mt-1 mb-md-2 me-2 me-md-0" title="Eliminar" (click)="removeLocation()" *ngIf="locationForms.length > 1">-</button>
+          <button class="btn btn-outline-primary mt-1 mb-md-1" title="Agregar" (click)="addLocation()">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+      </div>
+  </div>
+  <div class="d-flex flex-column mt-2 p-2 border rounded">
+    <label>Coordenadas de Ubicación del Proyecto:</label>
+    <div class="d-flex flex-column flex-md-row flex-wrap my-1">
+      <div class="form-check col col-md-4 col-lg-3 me-5">
+        <input class="form-check-input" type="radio" id="rbFile" formControlName="registerType" value="FILE" (change)="registerTypeChange()"/>
+        <label class="form-check-label" for="rbFile">Cargar desde archivo</label>
+      </div>
+      <div class="form-check col col-md-4 col-lg-3">
+        <input class="form-check-input" type="radio" id="rbManual" formControlName="registerType" value="MANUAL" (change)="registerTypeChange()"/>
+        <label class="form-check-label" for="rbManual">Ingresar manualmente</label>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column" *ngIf="form.get('registerType')?.value == 'FILE'">
+      <button  type="button" (click)="fileData.click();" class="btn btn-outline-primary btn-sm p-2 ">
+        <i class="fa-solid fa-file-arrow-up"></i> Seleccionar archivo .KMZ o .KML
+      </button>
+      <input type="file" class="d-none" #fileData (change)="onFileChange($event)" accept=".kmz, .kml" >
+      <div *ngIf="loadFileResult == 'S'" class="alert alert-info mt-1" role="alert">
+        Información extraida correctamente
+      </div>
+      <div *ngIf="loadFileResult == 'E'" class="alert alert-warning mt-1" role="alert">
+        No se pudo obtener información del archivo seleccionado
+      </div>
+      <div *ngIf="loadFileResult == 'NF'" class="alert alert-danger mt-1" role="alert">
+        Debe seleccionar un archivo con las coordenadas del proyecto
+      </div>
+    </div>
+
+    <div class="d-flex flex-column overflow-hidden w-100" *ngIf="form.get('registerType')?.value == 'MANUAL'">
+        <label>Sistema de coordenadas</label>
+        <div class="d-flex flex-column flex-md-row flex-wrap mb-2">
+            <div class="form-check me-5 col col-md-4 col-lg-3">
+                <input class="form-check-input" type="radio" id="rbUTM" formControlName="coordinatesType" value="UTM" (change)="onChangeCoordinatesType()" />
+                <label class="form-check-label" for="rbUTM">Coordenadas UTM</label>
+            </div>
+            <div class="form-check me-5 col col-md-4 col-lg-3">
+                <input class="form-check-input" type="radio" id="rbGeo" formControlName="coordinatesType" value="GEO" (change)="onChangeCoordinatesType()" />
+                <label class="form-check-label" for="rbGeo">Coordenadas geográficas</label>
+            </div>
+            <div class="col col-md-4 col-lg-3">
+              <!-- <button class="btn btn-link"><i class="fa-solid fa-circle-info"></i> Ver ejemplos del formato</button> -->
+              <a data-bs-toggle="offcanvas" href="#offcanvasFormat" role="button" aria-controls="offcanvasFormat">
+                  <i class="fa-solid fa-circle-info"></i> Ver ejemplos del formato
+              </a>
+            </div>
+        </div>
+        
+        <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasFormat" aria-labelledby="offcanvasFormatLabel">
+            <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasFormatLabel">
+                Registro en formato {{form.get('coordinatesType')?.value == 'UTM' ? 'UTM' : 'Georeferencial'}}
+            </h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div *ngIf="form.get('coordinatesType')?.value == 'UTM'">
+                    Las coordenadas UTM deben ingresarse en el formato: [Zona][Hemisferio]:[Este]:[Norte]<br>
+                    Por ejemplo la siguiente coordenada: <b>18S:418907.771881:8447503.807236</b> está compuesta por:<br>
+                    - Zona: 18<br>
+                    - Hemisferio: S<br>
+                    - Este: 418907.771881<br>
+                    - Norte: 8447503.807236<br><br>
+                    <b><u>Nota 1:</u></b><br>
+                    Debe tener en cuenta que Zona y Hemisferio pueden tener los siguientes valores:<br>
+                    - Zona: 17, 18 o 19 (Para Perú)<br>
+                    - Hemisferio: S=Sur o N=Norte<br><br>
+                    <b><u>Nota 2:</u></b><br>
+                    Debe ingresar una coordenada en cada línea. Por ejemplo:
+                    <div class="border rounded p-2">
+                        18S:276403.269224:8667167.355933<br>
+                        18S:276085.041957:8667201.236985<br>
+                        18S:276075.877371:8667080.035712<br>
+                        18S:276329.208346:8666993.408944
+                    </div>
+                </div>
+                <div *ngIf="form.get('coordinatesType')?.value == 'GEO'">
+                    Las coordenadas Georeferenciales deben ingresarse en el formato: [Latitud],[Longitud]<br>
+                    Por ejemplo la siguiente coordenada: <b>-12.049215,-77.05397</b> está compuesta por:<br>
+                    - Latitud: -12.049215<br>
+                    - Longitud: -77.05397<br><br>
+                    <b><u>Nota:</u></b><br>
+                    Debe ingresar una coordenada en cada línea. Por ejemplo:
+                    <div class="border rounded p-2">
+                        -12.049215,-77.05397<br>
+                        -12.048887,-77.05689<br>
+                        -12.049982,-77.056983<br>
+                        -12.050782,-77.054662
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-floating">
+            <textarea id="txtCoordinates" class="form-control" placeholder="-" style="height: 100px" (input)="onCoordinatesTextChanges($event)"
+                formControlName="coordinates" [ngClass]="{'is-invalid': hasError('coordinates') || validateCoordinatesMessage}">
+            </textarea>
+            <label for="txtCoordinates">Digite aquí las coordenadas</label>
+            <div *ngIf="hasError('coordinates','required')" class="invalid-feedback">Este campo es requerido</div>
+            <div *ngIf="validateCoordinatesMessage" class="invalid-feedback">
+                {{validateCoordinatesMessage}}
+                <span class="text-decoration-underline"
+                    *ngIf="validationCoordinatesErrorLength  > 0"
+                    (click)="showErrorsCoordinatesComplete()"
+                    role="button">
+                    {{validationCoordinatesErrorLength == 1 ?
+                    "( +" + validationCoordinatesErrorLength + " error adicional)" :
+                    "( +" + validationCoordinatesErrorLength + " errores adicionales)"}}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-relative d-flex mt-2 border rounded justify-content-center overflow-hidden" *ngIf="apiLoaded">
+      <div class="position-absolute top-0 end-0" style="z-index: 1;"
+        *ngIf="form.get('registerType')?.value == 'MANUAL'">
+          <button class="btn btn-primary me-2 mt-2" (click)="updateMapClick()">Actualizar</button>
+      </div>
+      <google-map #map width="1000px" height="500px" [center]="{lat: -9.4481521, lng: -77.3990204}" [zoom]="5.5">
+          <map-marker *ngFor="let marker of markers" [position]="marker.position">
+          </map-marker>
+          <map-polyline *ngFor="let polyline of polylines" [path]="polyline.path" [options]="polyline.options">
+          </map-polyline>
+          <!-- <map-kml-layer *ngIf="kmlUrl" [url]="kmlUrl"></map-kml-layer> -->
+      </google-map>
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+      <div class="form-floating col-md-6">
+          <select id="ddlZoning" class="form-select" formControlName="zoning" 
+            [ngClass]="{'is-invalid': hasError('zoning')}" (change)="changeZoning()">
+            <option value="" disabled>Seleccionar</option>
+            <option *ngFor="let x of zoningList" [value]="x.code">{{x.name}}</option>
+          </select>
+          <label for="ddlZoning">Zonificación</label>
+          <div class="invalid-feedback">Este campo es requerido</div>
+      </div>
+      <div class="form-floating col-md-6">
+          <input id="txtZoneSource" class="form-control" placeholder="-"
+              formControlName="zoningSource" [ngClass]="{'is-invalid': hasError('zoningSource')}">
+          <label for="txtZoneSource">Fuente de Zonificación</label>
+          <div class="invalid-feedback">Este campo es requerido</div>
+      </div>
+  </div>
+  <div class="d-flex flex-column flex-md-row">
+      <div class="form-floating mt-2 col-md-6">
+          <input id="txtArea" class="form-control" placeholder="-"
+              formControlName="area" [ngClass]="{'is-invalid': hasError('area')}" mask="separator.2" thousandSeparator=",">
+          <label for="txtArea">Área (en metros cuadrados)</label>
+          <div  *ngIf="hasError('area','required')"  class="invalid-feedback">Este campo es requerido</div>
+          <div  *ngIf="hasError('area','pattern')" class="invalid-feedback">Sólo se permiten valores númericos</div>
+      </div>
+      <div class="form-floating mt-2 col-md-6">
+          <input id="txtPerimeter" class="form-control" placeholder="-"
+              formControlName="perimeter" [ngClass]="{'is-invalid': hasError('perimeter')}" mask="separator.2" thousandSeparator="," >
+          <label for="txtPerimeter">Perímetro (en metros)</label>
+          <div  *ngIf="hasError('perimeter','required')"  class="invalid-feedback">Este campo es requerido</div>
+          <div  *ngIf="hasError('perimeter','pattern')" class="invalid-feedback">Sólo se permiten valores númericos</div>
+      </div>
+  </div>
+  <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+      <div class="form-floating col-md-4">
+          <input id="dttStartDate" type="date" class="form-control" placeholder="-"
+              formControlName="startDate" [ngClass]="{'is-invalid': hasError('startDate')}">
+          <label for="dttStartDate">Fecha de Inicio</label>
+        <div  *ngIf="hasError('startDate','required')" class="invalid-feedback">Este campo es requerido </div>
+        <div  *ngIf="hasError('startDate','futureDate')" class="invalid-feedback">La fecha de inicio debe ser posterior a la fecha actual</div>
+      </div>
+      <div class="form-floating col-md-4">
+          <input id="txtBudget" class="form-control" placeholder="-"
+              formControlName="budget" [ngClass]="{'is-invalid': hasError('budget')}" mask="separator.2" thousandSeparator=",">
+          <label for="txtBudget">Presupuesto Estimado (en Nuevos Soles)</label>
+          <div  *ngIf="hasError('budget','required')"  class="invalid-feedback">Este campo es requerido</div>
+          <div  *ngIf="hasError('budget','min')" class="invalid-feedback">El valor debe de ser mayor a 0</div>
+      </div>
+      <div class="form-floating col-md-4">
+          <input id="txtUsefulLife" class="form-control" placeholder="-"
+              formControlName="lifetime" [ngClass]="{'is-invalid': hasError('lifetime')}" mask="separator.2" thousandSeparator=",">
+          <label for="txtUsefulLife">Vida Útil (en años)</label>
+          <div  *ngIf="hasError('lifetime','required')"  class="invalid-feedback">Este campo es requerido</div>
+          <div  *ngIf="hasError('lifetime','pattern')" class="invalid-feedback">Sólo se permiten valores númericos</div>
+          <div  *ngIf="hasError('lifetime','min')" class="invalid-feedback">El valor debe de ser mayor a 0</div>
+        </div>
+  </div>
+</ng-container>

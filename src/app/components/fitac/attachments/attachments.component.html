@@ -1,0 +1,103 @@
+<ng-container [formGroup]="form">
+  <div class="d-flex justify-content-between">
+    <div class="form-floating mt-4 d-block w-100">
+      <input id="txtStandars" type="file" class="form-control" placeholder="-"
+          accept=".pdf"
+          formControlName="standarsFileName" [ngClass]="{'is-invalid': hasError('standarsFileName')}"
+          (change)="onChangeStandars($event)">
+      <label for="txtStandars">DJ de Cumplimiento de Estandares de Calidad Ambiental y Límites Máximos Permisibles de RNI</label>
+      <div *ngIf="hasError('standarsFileName','required')" class="invalid-feedback">Este campo es requerido</div>
+      <div *ngIf="hasError('standarsFileName', 'isNotPdf')" class="invalid-feedback">{{form.get('standarsFileName')?.getError('isNotPdf')}}</div>
+      <div *ngIf="hasError('standarsFileName', 'maxSize')" class="invalid-feedback">{{form.get('standarsFileName')?.getError('maxSize')}}</div>
+    </div>
+    <div class="ms-3 mt-4">
+      <a [href]="urlStandards" target="_blank"  class="btn btn-outline-primary btn-sm p-1 d-flex">
+        <i class="fs-4 fa-solid fa-file-arrow-down"></i> Descargar Plantilla
+      </a>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <div class="form-floating mt-4 d-block w-100">
+        <input id="txtSEIA" type="file" class="form-control" placeholder="-"
+            accept=".pdf"
+            formControlName="seiaFileName" [ngClass]="{'is-invalid': hasError('seiaFileName')}"
+            (change)="onChangeSeia($event)">
+        <label for="txtSEIA">DJ de que el Proyecto NO está Sujeto al SEIA</label>
+        <div *ngIf="hasError('seiaFileName','required')" class="invalid-feedback">Este campo es requerido</div>
+        <div *ngIf="hasError('seiaFileName', 'isNotPdf')" class="invalid-feedback">{{form.get('seiaFileName')?.getError('isNotPdf')}}</div>
+        <div *ngIf="hasError('seiaFileName', 'maxSize')" class="invalid-feedback">{{form.get('seiaFileName')?.getError('maxSize')}}</div>
+    </div>
+    <div class="ms-3 mt-4">
+      <a  [href]="urlSeia" target="_blank"  class="btn btn-outline-primary btn-sm p-1 d-flex">
+        <i class="fs-4 fa-solid fa-file-arrow-down"></i> Descargar Plantilla
+      </a>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <div class="form-floating mt-4 d-block w-100 ">
+      <input id="txtSchedule" type="file" class="form-control" placeholder="-"
+          accept=".pdf"
+          formControlName="scheduleFileName" [ngClass]="{'is-invalid': hasError('scheduleFileName')}"
+          (change)="onChangeSchedule($event)">
+      <label for="txtSchedule">Cronograma</label>
+      <div *ngIf="hasError('scheduleFileName','required')" class="invalid-feedback">Este campo es requerido</div>
+      <div *ngIf="hasError('scheduleFileName', 'isNotPdf')" class="invalid-feedback">{{form.get('scheduleFileName')?.getError('isNotPdf')}}</div>
+      <div *ngIf="hasError('scheduleFileName', 'maxSize')" class="invalid-feedback">{{form.get('scheduleFileName')?.getError('maxSize')}}</div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <div class="form-floating mt-4 d-block w-100">
+        <input id="txtDrawings" type="file" class="form-control" placeholder="-"
+            accept=".pdf"
+            formControlName="drawingsFileName" [ngClass]="{'is-invalid': hasError('drawingsFileName')}"
+            (change)="onChangeDrawings($event)">
+        <label for="txtDrawings">Planos de Ubicación y Diseño de Ingeniería</label>
+        <div *ngIf="hasError('drawingsFileName','required')" class="invalid-feedback">Este campo es requerido</div>
+        <div *ngIf="hasError('drawingsFileName', 'isNotPdf')" class="invalid-feedback">{{form.get('drawingsFileName')?.getError('isNotPdf')}}</div>
+        <div *ngIf="hasError('drawingsFileName', 'maxSize')" class="invalid-feedback">{{form.get('drawingsFileName')?.getError('maxSize')}}</div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between" [ngClass]="{'d-none': infraestructureAttachment != 'D'}">
+    <div class="form-floating mt-4 d-block w-100">
+        <input id="txtDeployment" type="file" class="form-control" placeholder="-"
+            accept=".pdf"
+            formControlName="deploymentFileName" [ngClass]="{'is-invalid': hasError('deploymentFileName')}"
+            (change)="onChangeDeployment($event)">
+        <label for="txtDeployment">Despliegue Aéreo y/o Subterráneo</label>
+        <div *ngIf="hasError('deploymentFileName','required')" class="invalid-feedback">Este campo es requerido</div>
+        <div *ngIf="hasError('deploymentFileName', 'isNotPdf')" class="invalid-feedback">{{form.get('deploymentFileName')?.getError('isNotPdf')}}</div>
+        <div *ngIf="hasError('deploymentFileName', 'maxSize')" class="invalid-feedback">{{form.get('deploymentFileName')?.getError('maxSize')}}</div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between" [ngClass]="{'d-none': infraestructureAttachment != 'F'}">
+    <div class="form-floating mt-4 d-block w-100">
+      <input id="txtPhotomontage" type="file" class="form-control" placeholder="-"
+          accept=".pdf"
+          formControlName="photomontageFileName" [ngClass]="{'is-invalid': hasError('photomontageFileName')}"
+          (change)="onChangePhotomontage($event)">
+      <label for="txtPhotomontage">Fotomontaje de la Infraestructura de Telecomunicaciones</label>
+      <div *ngIf="hasError('photomontageFileName','required')" class="invalid-feedback">Este campo es requerido</div>
+      <div *ngIf="hasError('photomontageFileName', 'isNotPdf')" class="invalid-feedback">{{form.get('photomontageFileName')?.getError('isNotPdf')}}</div>
+      <div *ngIf="hasError('photomontageFileName', 'maxSize')" class="invalid-feedback">{{form.get('photomontageFileName')?.getError('maxSize')}}</div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between">
+    <div class="form-floating mt-4 d-block w-100">
+      <input id="txtPreExistingInfrastructure" type="file" class="form-control" placeholder="-"
+          accept=".pdf"
+          formControlName="preExistingInfrastructureFileName" [ngClass]="{'is-invalid': hasError('preExistingInfrastructureFileName')}"
+          (change)="onChangePreExistingInfrastructure($event)">
+      <label for="txtPreExistingInfrastructure">Panel Fotográfico Digital de la Infraestructura Preexistente</label>
+      <div *ngIf="hasError('preExistingInfrastructureFileName','required')" class="invalid-feedback">Este campo es requerido</div>
+      <div *ngIf="hasError('preExistingInfrastructureFileName', 'isNotPdf')" class="invalid-feedback">{{form.get('preExistingInfrastructureFileName')?.getError('isNotPdf')}}</div>
+      <div *ngIf="hasError('preExistingInfrastructureFileName', 'maxSize')" class="invalid-feedback">{{form.get('preExistingInfrastructureFileName')?.getError('maxSize')}}</div>
+    </div>
+  </div>
+
+</ng-container>

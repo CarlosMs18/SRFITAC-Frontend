@@ -1,0 +1,128 @@
+<div class="d-flex flex-column" [formGroup]="form">
+  <div class="d-flex flex-wrap flex-column flex-md-row  mt-4">
+    <div class="form-floating col-md-4">
+        <select id="ddlInfraestructureType" class="form-select" placeholder="-" (change)="infraestrutureChange()"
+            formControlName="infraestrutureType" [ngClass]="{'is-invalid': hasError('infraestrutureType')}">
+            <option value="" disabled>Seleccionar</option>
+            <option *ngFor="let option of infraestructureTypes" [value]="option.code">{{option.name}}</option>
+        </select>
+        <label for="ddlInfraestructureType">Tipo de Infraestructura</label>
+        <div class="invalid-feedback">Este campo es requerido</div>
+    </div>
+
+    <div class="form-floating col-md-4" [ngClass]="{'d-none': !showMimicryList}">
+        <select id="ddlTypeOfMimicry" class="form-select" placeholder="-" formControlName="mimicryType" 
+          [ngClass]="{'is-invalid': hasError('mimicryType')}" (change)="mimicryTypeChange()">
+          <option value="" disabled>Seleccionar</option>
+          <option *ngFor="let option of mimicryList" [value]="option.code">{{option.code}} - {{option.name}}</option>
+        </select>
+        <label for="ddlTypeOfMimicry">Tipo de Mimetización</label>
+        <div class="invalid-feedback">Este campo es requerido</div>
+    </div>
+
+    <div class="col-md-4" [ngClass]="{'d-none': !showGeneralHeight}">
+        <div class="form-floating" >
+          <input id="txtHeight" class="form-control" placeholder="-" formControlName="height" 
+            [ngClass]="{'is-invalid': hasError('height')}" mask="separator.2" thousandSeparator=",">
+          <label for="txtHeight">Altura o Extensión</label>
+          <div *ngIf="hasError('height', 'required')" class="invalid-feedback">Este campo es requerido</div>
+          <div *ngIf="hasError('height', 'min')" class="invalid-feedback">El valor debe ser mayor a 0</div>
+          <div *ngIf="hasError('height', 'max')" class="invalid-feedback">La valor debe ser menor o igual a {{valueHeightMax}}</div>
+        </div>
+    </div>
+    
+    <div class="d-flex flex-wrap flex-column flex-md-row col-md-8" [ngClass]="{'d-none': !showWiringFields}">
+      <div class="col-md-6">
+        <div class="form-floating" >
+          <input id="txtAerialLength" class="form-control" placeholder="-"
+            formControlName="aerialLength" [ngClass]="{'is-invalid': hasError('aerialLength') || form.hasError('wiring')}" mask="separator.2" thousandSeparator=",">
+          <label for="txtAerialLength">Longitud Aérea</label>
+            <div *ngIf="hasError('aerialLength', 'min')" class="invalid-feedback">El valor debe ser mayor o igual a 0</div>
+            <div *ngIf="hasError('aerialLength', 'max')" class="invalid-feedback">El valor debe ser menor o igual a {{maxAerialLength}}</div>
+        </div>
+      </div>
+  
+      <div class="col-md-6">
+          <div class="form-floating" >
+            <input id="txtUndergroundLength" class="form-control" placeholder="-"
+              formControlName="undergroundLength" [ngClass]="{'is-invalid': hasError('undergroundLength') || form.hasError('wiring')}" mask="separator.2" thousandSeparator=",">
+            <label for="txtUndergroundLength">Longitud Subterranea</label>
+            <div *ngIf="hasError('undergroundLength', 'min')" class="invalid-feedback">El valor debe ser mayor o igual a 0</div>
+            <div *ngIf="hasError('undergroundLength', 'max')" class="invalid-feedback">El valor debe ser menor o igual a 4000</div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column">
+    <div class="d-flex flex-wrap flex-column flex-md-row mt-2" [ngClass]="{'d-none': !showWiringFields}">
+      <div class="col-md-6">
+          <div class="form-floating" >
+            <input id="txtNumberNewPosts" class="form-control" placeholder="-"
+              formControlName="numberNewPosts" [ngClass]="{'is-invalid': hasError('numberNewPosts') || form.hasError('wiring')}" mask="separator.2" thousandSeparator=",">
+            <label for="txtNumberNewPosts">Cantidad de Postes Nuevos</label>
+            <div *ngIf="hasError('numberNewPosts', 'min')" class="invalid-feedback">El valor debe ser mayor o igual a 0</div>
+          </div>
+      </div>
+  
+      <div class="col-md-6">
+          <div class="form-floating" >
+            <input id="txtLengthNewChannel" class="form-control" placeholder="-"
+              formControlName="lengthNewChannel" [ngClass]="{'is-invalid': hasError('lengthNewChannel') || form.hasError('wiring')}" mask="separator.2" thousandSeparator=",">
+            <label for="txtLengthNewChannel">Longitud de Nuevo Canalizado</label>
+            <div *ngIf="hasError('lengthNewChannel', 'min')" class="invalid-feedback">El valor debe ser mayor o igual a 0</div>
+            <div *ngIf="hasError('lengthNewChannel', 'max')" class="invalid-feedback">El valor debe ser menor o igual a 4000</div>
+          </div>
+      </div>
+    </div>
+    <div *ngIf="form.hasError('wiring')" class="invalid-feedback d-block">Debe ingresar al menos un valor mayor 0</div>
+  </div>
+
+  <div class="d-flex flex-column">
+    <div class="d-flex flex-wrap flex-column flex-md-row mt-2" [ngClass]="{'d-none': !showRooftopFields}">
+      <div class="col-md-6">
+          <div class="form-floating" >
+            <input id="txtAntennaHeight" class="form-control" placeholder="-"
+              formControlName="antennaHeight" [ngClass]="{'is-invalid': hasError('antennaHeight') || form.hasError('ratio')}" mask="separator.2" thousandSeparator=",">
+            <label for="txtAntennaHeight">Altura de la Antena y Soporte</label>
+            <div *ngIf="hasError('antennaHeight', 'required'); else otrosErroresAntennaHeight" class="invalid-feedback">Este campo es requerido</div>
+            <ng-template #otrosErroresAntennaHeight>
+              <div *ngIf="hasError('antennaHeight', 'min')" class="invalid-feedback">El valor debe ser mayor a 0</div>
+              <div *ngIf="hasError('antennaHeight', 'max')" class="invalid-feedback">La altura debe ser menor o igual a {{valueHeightMax}}</div>
+            </ng-template>
+          </div>
+      </div>
+  
+      <div class="col-md-6">
+          <div class="form-floating" >
+            <input id="txtBuildingHeight" class="form-control" placeholder="-"
+              formControlName="buildingHeight" [ngClass]="{'is-invalid': hasError('buildingHeight') || form.hasError('ratio')}" mask="separator.2" thousandSeparator=",">
+            <label for="txtBuildingHeight">Altura de la Edificación</label>
+            <div *ngIf="hasError('buildingHeight', 'required'); else otrosErroresBuildingHeight" class="invalid-feedback">Este campo es requerido</div>
+            <ng-template #otrosErroresBuildingHeight>
+              <div *ngIf="hasError('buildingHeight', 'max')" class="invalid-feedback">La altura debe ser menor o igual a {{maxBuildingHeight}}</div>
+              <div *ngIf="hasError('buildingHeight', 'min0') || hasError('buildingHeight', 'min')" class="invalid-feedback">El valor debe ser mayor a 0</div>
+              <div *ngIf="hasError('buildingHeight', 'minBH')" class="invalid-feedback">El valor debe ser mayor o igual a {{minBuildingHeight}}</div>
+            </ng-template>
+          </div>
+      </div>
+    </div>
+    <div *ngIf="form.hasError('ratio') && !hasError('antennaHeight') && !hasError('buildingHeight')" class="invalid-feedback d-block">El ratio debe tener un valor máximo de: 0.5</div>
+  </div>
+
+  <div class="d-flex flex-wrap flex-column flex-md-row justify-content-between mt-2">
+      <div class="form-floating col-md-6">
+          <input id="txtService" class="form-control" placeholder="-"
+              formControlName="service" [ngClass]="{'is-invalid': hasError('service')}">
+          <label for="txtService">Servicio a Brindar</label>
+          <div class="invalid-feedback">Este campo es requerido</div>
+      </div>
+      <div class="form-floating col-md-6" [ngClass]="{'d-none': showWiringFields}">
+          <input id="txtRadiations" class="form-control" placeholder="-" mask="separator.6" thousandSeparator=","
+              formControlName="rniValue" [ngClass]="{'is-invalid': hasError('rniValue')}">
+          <label for="txtRadiations">Valor RNI (W/m2)</label>
+          <div *ngIf="hasError('rniValue', 'required')" class="invalid-feedback">Este campo es requerido</div>
+          <div *ngIf="hasError('rniValue', 'min')" class="invalid-feedback">El valor debe ser mayor a 0</div>
+      </div>
+  </div>
+</div>
